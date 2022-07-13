@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class ShotrsterConfig(AppConfig):
+class ShortCodeConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'shotrster'
+    name = 'shortcode'
