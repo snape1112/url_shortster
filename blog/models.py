@@ -1,6 +1,5 @@
 from django.db import models
 import uuid
-import jsonfield
 
 NULL_AND_BLANK = {'null': True, 'blank': True}
 
@@ -65,11 +64,11 @@ class BlogPost(models.Model):
         help_text="Number of reads",
     )
 
-    tags = jsonfield.JSONField(
-        **NULL_AND_BLANK,
-        verbose_name="Tags",
-        help_text="""List of tags. Ex: ["tech", "health]""",
-    )
+    # tags = jsonfield.JSONField(
+    #     **NULL_AND_BLANK,
+    #     verbose_name="Tags",
+    #     help_text="""List of tags. Ex: ["tech", "health]""",
+    # )
 
     class Meta:
         verbose_name = "BlogPost"
