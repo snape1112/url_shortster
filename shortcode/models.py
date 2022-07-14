@@ -1,15 +1,18 @@
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
+from .utils import generate_shortcode
 
 NULL_AND_BLANK = {'null': True, 'blank': True}
 
 class ShortCode(models.Model):
-    short_code = models.CharField(
-        max_length=20,
+    shortcode = models.CharField(
+        max_length=settings.SHORTCODE_MAX_LENGTH,
+        default=generate_shortcode,
         unique=True,
         primary_key=True,
         verbose_name="Short URL",
-        help_text="Short URL. Automatically allocated shortcodes are exactly 6-length. User subitted shortcodes are at leat 4-length.",
+        help_text="lowercase short url. Automatically allocated shortcodes are exactly 6-length. User subitted shortcodes are at leat 4-length.",
     )
 
     original_url = models.CharField(
