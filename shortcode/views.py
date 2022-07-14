@@ -23,6 +23,10 @@ class ShortCodeViewSet(UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, 
     queryset = ShortCode.objects.all()
     lookup_field = "shortcode"
 
+    def get_object(self):
+        shortcode = self.kwargs["shortcode"].lower()
+        return get_object_or_404(ShortCode, shortcode=shortcode)
+
     def retrieve(self, request, *args, **kwargs):
         """
         A user can access a /<shortcode> endpoint and be redirected to the URL associated with that shortcode, if it exists.
@@ -62,6 +66,6 @@ class ShortCodeStatsResponse(generics.GenericAPIView):
     queryset = ShortCode.objects.all()
 
     def get(self, shortcode):
-        code = get_object_or_404(ShortCode, shortcode=shortcode)
+        code = get_object_or_404(ShortCode, shortcode=shortcode.lower())
         serializer = self.get_serializer(code)
         return Response(serializer.data)

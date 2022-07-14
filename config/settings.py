@@ -27,8 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-HATCHWAYS_BLOG_URL = "https://api.hatchways.io/assessment/blog/posts"
-
 
 # Application definition
 
