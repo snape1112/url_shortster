@@ -1,10 +1,16 @@
+import re
+from lib2to3.refactor import get_all_fix_names
+
+from django.conf import settings
+from pkg_resources import require
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-import re
-from .models import ShortCode
-from django.conf import settings
 
-class ShortCodeSerializer(serializers.Serializer):
+from .models import ShortCode
+from .utils import generate_shortcode
+
+
+class ShortCodeSerializer(serializers.ModelSerializer):
     shortcode = serializers.CharField(
         max_length=settings.SHORTCODE_MAX_LENGTH,
         required=False,
@@ -12,21 +18,35 @@ class ShortCodeSerializer(serializers.Serializer):
     )
 
     def validate_shortcode(self, value):
-        # user submitted code must be at least 4 characters long
         if value:
-            if len(value) < 4:
-                raise ValidationError("Submitted shortcode must be at leat 4 characters long.")
             value = value.lower()
-            if not re.match("[0-9|a-z]", value):
-                raise ValidationError("Submitted shortcode can contain digits, upper case letters, and lowercase letters.")
 
+            if not re.match("^[0-9a-z]{4,}$", value):
+                raise ValidationError(
+                    "Submitted shortcode must be at least 4 character long and contain only digits, upper case letters, and lowercase letters."
+                )
+
+            if ShortCode.objects.filter(shortcode=value).first():
+                raise ValidationError("Submitted shortcode must be unique")
+
+        return value
+
+    def create(self, validated_data):
+        shortcode = validated_data.get("shortcode", None)
+        if not shortcode:
+            shortcode = generate_shortcode()
+
+        code = ShortCode.objects.create(
+            original_url=validated_data["original_url"], shortcode=shortcode
+        )
+        return code
 
     class Meta:
         model = ShortCode
         fields = ("shortcode", "original_url")
 
 
-class ShortCodeStatsSerializer(serializers.Serializer):
+class ShortCodeStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShortCode
-        fields = ("registerd_at", "last_accessed_at", "accessed_count")
+        fields = ("registered_at", "last_accessed_at", "accessed_count")

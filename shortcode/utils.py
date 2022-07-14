@@ -1,12 +1,12 @@
 import random
 import string
 
-from django.apps import apps
+from .models import ShortCode
+
 
 def generate_shortcode():
-    allowed_chars = ''.join((string.ascii_letters, string.digits))
+    allowed_chars = "".join((string.ascii_lowercase, string.digits))
     while True:
-        unique_id = ''.join(random.choice(allowed_chars) for _ in range(6))
-        ShortCode = apps.get_model("shortcode.Shortcode")
-        if not ShortCode.objects.filter(short_code=unique_id).first():
+        unique_id = "".join(random.choice(allowed_chars) for _ in range(6))
+        if not ShortCode.objects.filter(shortcode=unique_id).first():
             return unique_id
