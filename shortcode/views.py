@@ -1,24 +1,27 @@
+from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
-from django.http import Http404
-from django.shortcuts import get_object_or_404, render
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import generics
-from rest_framework.mixins import UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin
+from rest_framework.mixins import (DestroyModelMixin, RetrieveModelMixin,
+                                   UpdateModelMixin)
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from .models import ShortCode
 from .serializers import ShortCodeSerializer, ShortCodeStatsSerializer
-from django.shortcuts import redirect
-from rest_framework.response import Response
+
 
 class ShortCodeCreateView(generics.CreateAPIView):
     """
     Create new shortcode
     """
+
     serializer_class = ShortCodeSerializer
     queryset = ShortCode.objects.all()
 
 
-class ShortCodeViewSet(UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
+class ShortCodeViewSet(
+    UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
+):
     serializer_class = ShortCodeSerializer
     queryset = ShortCode.objects.all()
     lookup_field = "shortcode"
@@ -37,8 +40,8 @@ class ShortCodeViewSet(UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, 
         code.last_accessed_at = timezone.now()
         code.save()
 
-        redirect(code.original_url)
-    
+        return redirect(code.original_url)
+
     def update(self, request, *args, **kwargs):
         """
         Update shortcode and original url
@@ -65,7 +68,7 @@ class ShortCodeStatsResponse(generics.GenericAPIView):
     serializer_class = ShortCodeStatsSerializer
     queryset = ShortCode.objects.all()
 
-    def get(self, shortcode):
+    def get(self, request, shortcode, *args, **kwargs):
         code = get_object_or_404(ShortCode, shortcode=shortcode.lower())
         serializer = self.get_serializer(code)
         return Response(serializer.data)
