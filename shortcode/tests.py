@@ -124,3 +124,67 @@ class RetrieveStatsTest(APITestCase):
         response = self.client.get("/" + SampleData[0]["shortcode"] + "/stats")
 
         self.assertEqual(response.data["accessed_count"], 3)
+
+
+class UpdateTest(APITestCase):
+    submit_url = '/submit'
+
+    def setUp(self):
+        self.client.post(self.submit_url, SampleData[0], format='json')
+
+    def test_patch_url(self):
+        data = {
+            "original_url": SampleData[1]["original_url"],
+        }
+        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        code = ShortCode.objects.get(shortcode=SampleData[0]["shortcode"])
+        self.assertEqual(code.original_url, SampleData[1]["original_url"])
+
+    def test_patch_shortcode(self):
+        data = {
+            "shortcode": SampleData[1]["shortcode"],
+        }
+        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None)
+        self.assertNotEqual(ShortCode.objects.filter(shortcode=SampleData[1]["shortcode"]).first(), None)
+
+    def test_invalid_shortcode(self):
+        data = {
+            "shortcode": "goo_gle",
+        }
+        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid(self):
+        data = {
+            "shortcode": SampleData[1]["shortcode"],
+        }
+        response = self.client.patch("/medium", data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class DeleteTest(APITestCase):
+    submit_url = '/submit'
+
+    def setUp(self):
+        self.client.post(self.submit_url, SampleData[0], format='json')
+
+    def test_delete(self):
+        response = self.client.delete("/" + SampleData[0]["shortcode"], {}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        self.assertEqual(ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None)
+
+    def test_invalid(self):
+        response = self.client.delete("/medium")
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
