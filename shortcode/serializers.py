@@ -8,7 +8,6 @@ class ShortCodeSerializer(serializers.Serializer):
     shortcode = serializers.CharField(
         max_length=settings.SHORTCODE_MAX_LENGTH,
         required=False,
-        verbose_name="Short URL",
         help_text="Short URL. Automatically allocated shortcodes are exactly 6-length. User subitted shortcodes are at leat 4-length.",
     )
 
@@ -18,7 +17,7 @@ class ShortCodeSerializer(serializers.Serializer):
             if len(value) < 4:
                 raise ValidationError("Submitted shortcode must be at leat 4 characters long.")
             value = value.lower()
-            if not re.match("[0-9|a-f]", value):
+            if not re.match("[0-9|a-z]", value):
                 raise ValidationError("Submitted shortcode can contain digits, upper case letters, and lowercase letters.")
 
 
