@@ -9,7 +9,6 @@ class ShortCode(models.Model):
     shortcode = models.CharField(
         max_length=settings.SHORTCODE_MAX_LENGTH,
         unique=True,
-        primary_key=True,
         verbose_name="Short URL",
         help_text="lowercase short url. Automatically allocated shortcodes are exactly 6-length. User subitted shortcodes are at leat 4-length.",
     )

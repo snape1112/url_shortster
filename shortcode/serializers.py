@@ -1,8 +1,6 @@
 import re
-from lib2to3.refactor import get_all_fix_names
 
 from django.conf import settings
-from pkg_resources import require
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -26,7 +24,7 @@ class ShortCodeSerializer(serializers.ModelSerializer):
                     "Submitted shortcode must be at least 4 character long and contain only digits, upper case letters, and lowercase letters."
                 )
 
-            if ShortCode.objects.filter(shortcode=value).first():
+            if not self.instance and ShortCode.objects.filter(shortcode=value).first():
                 raise ValidationError("Submitted shortcode must be unique")
 
         return value
@@ -40,6 +38,11 @@ class ShortCodeSerializer(serializers.ModelSerializer):
             original_url=validated_data["original_url"], shortcode=shortcode
         )
         return code
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        print(instance)
+        return instance
 
     class Meta:
         model = ShortCode
