@@ -1,8 +1,20 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from solo.models import SingletonModel
 
 NULL_AND_BLANK = {"null": True, "blank": True}
+
+
+class ShortCodeSetting(SingletonModel):
+    generated_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="Generated Count",
+        help_text="Automatically allocated shortcode count"
+    )
+
+    class Meta: 
+        verbose_name="ShortCode Setting"
 
 
 class ShortCode(models.Model):
@@ -48,3 +60,7 @@ class ShortCode(models.Model):
         **NULL_AND_BLANK,
         help_text="Timestamp when the record was modified. The date and time are displayed in the Timezone from where request is made. e.g. 2019-14-29T00:15:09Z for April 29, 2019 0:15:09 UTC"
     )
+
+    class Meta:
+        verbose_name = "ShortCode"
+        verbose_name_plural = "ShortCodes"

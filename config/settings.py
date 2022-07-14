@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "shortcode",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,49 @@ STATIC_URL = "/static/"
 API_VERSION = 1
 
 SHORTCODE_MAX_LENGTH = 20
+
+SWAGGER_SETTINGS = {
+    "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
+        "get",
+        "post",
+        "put",
+        "patch",
+        "destroy",
+        "head",
+        "delete",
+    ],
+    "SECURITY_DEFINITIONS": {
+        # 'basic': {
+        #     'type': 'basic'
+        # },
+    },
+    # 'LOGIN_URL': reverse_lazy('login'),
+    # 'LOGOUT_URL': reverse_lazy('logout'),
+    "USE_SESSION_AUTH": False,
+    "JSON_EDITOR": True,
+    "DOC_EXPANSION": "none",  # ["list"*, "full", "none"]
+    "REFETCH_SCHEMA_ON_LOGOUT": True,
+    "SHOW_REQUEST_HEADERS": True,
+    "APIS_SORTER": "alpha",
+    "DEFAULT_MODEL_DEPTH": 3,  # -1
+    "DEFAULT_MODEL_RENDERING": "example",
+    "OPERATIONS_SORTER": "none",  # [alpha, method, none],
+    "DEEP_LINKING": True,
+    "REQUIRED_PROPS_FIRST": False,
+    "DISPLAY_OPERATION_ID": True,
+    "PERSIST_AUTHORIZATION": True,
+    # 'SUPPORTED_SUBMIT_METHODS': "[\"get\", \"post\"]",
+    "TRY_IT_OUT_ENABLED": True,
+    "FILTER": True,
+    "WITH_CREDENTIALS": True,
+    "PERSIST_AUTHORIZATION": True,
+    "DEFAULT_INFO": "config.admin_api_urls",
+    "COMPONENT_SPLIT_REQUEST": True,
+    "HIDE_HOSTNAME": True,
+    "PATH_IN_MIDDLE": True,
+}
+
+REDOC_SETTINGS = {
+    "LAZY_RENDERING": True, 
+    "PATH_IN_MIDDLE": True
+}
