@@ -88,7 +88,9 @@ class RedirectTest(APITestCase):
     def test_redirect(self):
         response = self.client.get("/" + SampleData[0]["shortcode"])
 
-        self.assertRedirects(response, SampleData[0]["original_url"], target_status_code=302)
+        self.assertRedirects(
+            response, SampleData[0]["original_url"], target_status_code=302
+        )
 
     def test_invalid(self):
         response = self.client.get("/medium")
@@ -98,15 +100,17 @@ class RedirectTest(APITestCase):
     def test_case_insensitive(self):
         response = self.client.get("/" + SampleData[0]["shortcode"].upper())
 
-        self.assertRedirects(response, SampleData[0]["original_url"], target_status_code=302)
+        self.assertRedirects(
+            response, SampleData[0]["original_url"], target_status_code=302
+        )
 
 
 class RetrieveStatsTest(APITestCase):
-    submit_url = '/submit'
-    stats_url = '/stats'
+    submit_url = "/submit"
+    stats_url = "/stats"
 
     def setUp(self):
-        self.client.post(self.submit_url, SampleData[0], format='json')
+        self.client.post(self.submit_url, SampleData[0], format="json")
         for _ in range(3):
             self.client.get("/" + SampleData[0]["shortcode"])
 
@@ -127,16 +131,18 @@ class RetrieveStatsTest(APITestCase):
 
 
 class UpdateTest(APITestCase):
-    submit_url = '/submit'
+    submit_url = "/submit"
 
     def setUp(self):
-        self.client.post(self.submit_url, SampleData[0], format='json')
+        self.client.post(self.submit_url, SampleData[0], format="json")
 
     def test_patch_url(self):
         data = {
             "original_url": SampleData[1]["original_url"],
         }
-        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+        response = self.client.patch(
+            "/" + SampleData[0]["shortcode"], data, format="json"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -147,18 +153,26 @@ class UpdateTest(APITestCase):
         data = {
             "shortcode": SampleData[1]["shortcode"],
         }
-        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+        response = self.client.patch(
+            "/" + SampleData[0]["shortcode"], data, format="json"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None)
-        self.assertNotEqual(ShortCode.objects.filter(shortcode=SampleData[1]["shortcode"]).first(), None)
+        self.assertEqual(
+            ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None
+        )
+        self.assertNotEqual(
+            ShortCode.objects.filter(shortcode=SampleData[1]["shortcode"]).first(), None
+        )
 
     def test_invalid_shortcode(self):
         data = {
             "shortcode": "goo_gle",
         }
-        response = self.client.patch("/" + SampleData[0]["shortcode"], data, format="json")
+        response = self.client.patch(
+            "/" + SampleData[0]["shortcode"], data, format="json"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -172,17 +186,21 @@ class UpdateTest(APITestCase):
 
 
 class DeleteTest(APITestCase):
-    submit_url = '/submit'
+    submit_url = "/submit"
 
     def setUp(self):
-        self.client.post(self.submit_url, SampleData[0], format='json')
+        self.client.post(self.submit_url, SampleData[0], format="json")
 
     def test_delete(self):
-        response = self.client.delete("/" + SampleData[0]["shortcode"], {}, format="json")
+        response = self.client.delete(
+            "/" + SampleData[0]["shortcode"], {}, format="json"
+        )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        self.assertEqual(ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None)
+        self.assertEqual(
+            ShortCode.objects.filter(shortcode=SampleData[0]["shortcode"]).first(), None
+        )
 
     def test_invalid(self):
         response = self.client.delete("/medium")

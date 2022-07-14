@@ -1,2 +1,4 @@
 Django==3.2.13
 djangorestframework==3.13.1
+drf-yasg
+django-solo==2.0.0

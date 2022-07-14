@@ -39,11 +39,6 @@ class ShortCodeSerializer(serializers.ModelSerializer):
         )
         return code
 
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        print(instance)
-        return instance
-
     class Meta:
         model = ShortCode
         fields = ("shortcode", "original_url")
