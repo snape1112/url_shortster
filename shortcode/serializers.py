@@ -31,12 +31,11 @@ class ShortCodeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         shortcode = validated_data.get("shortcode", None)
+        original_url = validated_data["original_url"]
         if not shortcode:
-            shortcode = generate_shortcode()
+            shortcode = generate_shortcode(original_url)
 
-        code = ShortCode.objects.create(
-            original_url=validated_data["original_url"], shortcode=shortcode
-        )
+        code = ShortCode.objects.create(original_url=original_url, shortcode=shortcode)
         return code
 
     class Meta:

@@ -6,17 +6,6 @@ from solo.models import SingletonModel
 NULL_AND_BLANK = {"null": True, "blank": True}
 
 
-class ShortCodeSetting(SingletonModel):
-    generated_count = models.PositiveIntegerField(
-        default=0,
-        verbose_name="Generated Count",
-        help_text="Automatically allocated shortcode count"
-    )
-
-    class Meta: 
-        verbose_name="ShortCode Setting"
-
-
 class ShortCode(models.Model):
     shortcode = models.CharField(
         max_length=settings.SHORTCODE_MAX_LENGTH,
